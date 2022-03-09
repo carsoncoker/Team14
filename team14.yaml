@@ -1,0 +1,122 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: 'Team14 Maps API'
+  description: 'API for TigerChow Mapping and Locations Service'
+servers:
+  - url: 'tigerchow.com/locations'
+paths:
+  /restaurants:
+    post:
+      description: 'Add Restaurant Location: Submits the location coordinates of a restaurant location'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/restaurantLoc'
+    responses:
+      '200': 
+        description: 'Successfully added restaurant location'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/restaurantLoc'
+      '400':
+        $ref: '#/components/responses/400Error'
+
+    get:
+      description: 'Returns a list of restaurants. If no coordinates are supplied in request body, returns all restaurant locations'
+      parameters:
+        name: radius
+        in: query
+        description: ' Returns all restaurants within a distance radius.  Center specified by basicLoc object in request body'
+        schema:
+          type: integer
+      requestBody:
+        required: false;
+        content:
+          application/json:
+            schema: 
+              $ref: '#components/schemas/basicLoc'
+    responses:
+      '200':
+        description: 'Successfully returned list of restaurants'
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#components/schemas/basicLoc'
+      '400':
+        $ref: '#/components/responses/400Error'      
+
+
+
+components:
+
+  schemas:
+    RestaurantLoc:
+      type: object
+      required:
+        - rest_id
+        - rest_name
+        - rest_xCoord
+        - rest_yCoord
+      properties:
+        rest_id:
+          type: integer
+        rest_name:
+          type: string
+        rest_xCoord:
+          type: integer
+        rest_yCoord:
+          type: integer
+
+    DriverLoc:
+      type: object
+      required:
+        - driver_id
+        - driver_name
+        - driver_xCoord
+        - driver_yCoord
+      properties:
+        driver_id:
+          type: integer
+        driver_name:
+          type: string
+        driver_xCoord:
+          type: integer
+        driver_yCoord:
+          type: integer
+
+    BasicLoc:
+      type: object
+      required: 
+        - xCoord
+        - yCoord
+      properties:
+        xCoord:
+          type: integer
+        yCoord:
+          type: integer
+  
+  responses:
+    400Error:
+      description: 'Invalid request'
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              message:
+                type: string
+    200OK:
+      description: 'Request Successfully Completed'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
